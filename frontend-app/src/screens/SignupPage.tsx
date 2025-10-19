@@ -105,8 +105,8 @@ export const SignupPage: React.FC = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       const result = await register(form.values);
-      if(result.message === 'User Registered') {
-
+      if(result.message === 'User registered') {
+        setSignupSuccess(true);
       }else{
         setSignupError(result.message || 'Registration failed. Please try again.');
       }

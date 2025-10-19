@@ -4,6 +4,7 @@
 // =======================================
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Input, Checkbox } from '../components/Form';
 import { Button } from '../components/Button';
 import { useFormValidation } from '../components/Form';
@@ -16,6 +17,7 @@ interface LoginFormData {
 }
 
 export const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   const [loginError, setLoginError] = React.useState<string | null>(null);
@@ -50,20 +52,20 @@ export const LoginPage: React.FC = () => {
     setIsLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Simulate login logic
       const result = await login({ email: form.values.email, password: form.values.password });
-    if (result.token) {
-      // Save token to localStorage/sessionStorage
-      localStorage.setItem('token', result.token);
-      // Redirect to dashboard or set user state
-    } else {
-      setLoginError(result.message || 'Login failed');
-    }
-    } catch (error) {
-      setLoginError('An error occurred during login. Please try again.');
+      
+      if (result.token) {
+        // Save token and user info to localStorage
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('user', JSON.stringify(result.user));
+        
+        // Navigate to quiz list page
+        navigate('/quizzes');
+      } else {
+        setLoginError(result.message || 'Login failed');
+      }
+    } catch (error: any) {
+      setLoginError(error.message || 'An error occurred during login. Please try again.');
     } finally {
       setIsLoading(false);
     }
